@@ -4,6 +4,8 @@
 \usepackage{lmodern}
 \usepackage[french]{babel}
 \usepackage{graphicx}
+\usepackage{cite}
+\usepackage{hyperref}
 
 \title{%
   Rapport d'avancement thèse ACSEL \\
@@ -18,8 +20,8 @@
 \maketitle
 \tableofcontents
 
-\begin{abstract}
-\end{abstract}
+%\begin{abstract}
+%\end{abstract}
 
 %%% PRESENTATION
 \section{Présentation}
@@ -31,33 +33,33 @@ Après l’obtention d’un Bac S spé maths (mention bien) à Toulouse, j’ai 
 % PRESENTATION THESE
 \subsection{Contexte}
 Le contexte dans lequel se place mon sujet de thèse est double.
-D’un côté, on s’intéresse à l’arithmétique flottante. Les nombres flottants sont une discrétisation des nombres réels. 
-\begin{figure}
+D’un côté, on s’intéresse à l’\textbf{arithmétique flottante}. Les nombres flottants sont une discrétisation des nombres réels. 
+\begin{figure}[b]
   \begin{center}
     \includegraphics[width=12cm]{Floating_point_numbers_discretization}
-    \caption{Exemple de discretisation des nombres réels en nombres flottants. Source : Goldberg, D. (1991). What every computer scientist should know about floating-point arithmetic. ACM Computing Surveys (CSUR), 23(1), 5-48.}
+    \caption{Exemple de discretisation des nombres réels en nombres flottants. Source : Goldberg, D. (1991). What every computer scientist should know about floating-point arithmetic. ACM Computing Surveys (CSUR), 23(1), 5-48.\cite{goldberg1991every}}
     \label{discretization}
   \end{center}
 \end{figure}
 Prenons l'exemple d'une discrétisation flottante des nombre réels (Figure ~\ref{discretization}) selon les paramètres suivants : $\beta=2, p=3, e_{min}=-1,e_{max}=2$, avec $\beta$ la base, $p$ la précision, $e_{min}$ l'exposant minimal, $e_{max}$ l'exposant maximal.
 Sur l'exemple, on voit bien que $1,25$ est représentable ($1.01*2^{0}$), de même que $3$ ($1.10*2^{1}$). Bien que la somme de ces deux réels donne $3,25$, la somme flottante de ces deux nombres flottants donne elle $3$ (après arrondi), car $3,25$ n'est pas représentable exactement dans ces conditions.
-Le Standard IEEE 754 définit 3 entiers $(s,e,m)$ pour représenter nombres flottants. Il fournit aussi des \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}. On peut citer le format simple précision, le format double précision etc. \\
-Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux erreurs d'arrondi, comme dans le cas cité ci-dessus, où $3,25$ est devenu $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi cité les erreurs de cancellations, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. \\ % TODO exemple.
-Hors, lorsque l’on travaille sur un modèle qui comprend de nombreux calculs (super calculateurs, vastes modèles à exécution longue), les différentes erreurs s’accumulent, se combinent, et finalement affectent le résultat.
+Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour représenter nombres flottants. Il fournit aussi des \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}. On peut citer le format simple précision, le format double précision etc. \\
+Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux \textbf{erreurs d'arrondi}, comme dans le cas cité ci-dessus, où $3,25$ a dû être arrondi à $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi citer les \textbf{erreurs de cancellation}, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. \\ % TODO exemple.
+Hors, lorsque l’on simule un modèle qui comprend de nombreux calculs (super calculateurs, vastes simulations à exécution longue), les différentes erreurs s’accumulent, se combinent, et finalement affectent le résultat.
 
-Le deuxième volet de ma thèse porte sur ce domaine, celui de la recherche d'erreurs numériques dans les programmes.
-Le cas d’étude de ma thèse porte sur les modèles et simulations de Gladys.
-Gladys est un réseau international des littoralistes en méditerranée, regroupant de nombreux chercheurs dans le domaine du littoral.
-Ils ont établis de nombreux modèles pour décrire les phénomènes afférents à leur activité, notamment le phénomène \textbf{d’évolution du trait de côte}.
-L’implémentation informatique du modèle qui m’intéresse sera le sujet d’étude de ma thèse (un code volumineux en C et Fortran). Il prend des données en entrée et réalise sa simulation. C'est ici que viendra se placer mon travail. L’idée sera de \textbf{compiler} le programme, et d’en produire une analyse visant à suivre et quantifier les erreurs liées à l’arithmétique flottante.
+Le deuxième volet de ma thèse porte sur ce domaine, celui de la \textbf{recherche d'erreurs numériques dans les programmes}.
+Le cas d’étude de ma thèse porte sur les modèles et simulations de \textbf{Gladys}\footnote{\url{http://www.gladys-littoral.org}}.
+Gladys est un réseau international de littoralistes en méditerranée, regroupant de nombreux chercheurs dans le domaine du littoral.
+Ils ont établi de nombreux modèles pour décrire les phénomènes afférents à leur activité, notamment le phénomène \textbf{d’évolution du trait de côte}.
+L’implémentation informatique de ce modèle sera le sujet d’étude de ma thèse (un code volumineux en C et Fortran). Il prend des données en entrée et réalise sa simulation. C'est ici que viendra se placer mon travail. L’idée sera de \textbf{compiler} le programme, et d’en produire une analyse visant à suivre et quantifier les erreurs liées à l’arithmétique flottante.
 
-%modèle sur lequel a travaillé Bijan         [ accrétion, érosion ]
+%modèle sur lequel a travaillé Bijan  [ accrétion, érosion ]
 %les résultats subissent différents types d’erreurs [EDP, on dérive en fonction du temps, les erreurs peuvent s’accumuler/se combiner]
 %objectif : quantifier l’erreur informatique, numérique
 
-\subsection{ État de l’art }
+\subsection{État de l’art}
 
-Deux approches existent dans le domaine : les initiatives visant à “limiter” l’effet des erreurs (on peut citer les sommations compensées, Salsa...), et celles visant à quantifier et mesurer les erreurs.
+On peut distinguer deux catégories d'initiatives existantes dans le domaine : les démarches visant à “limiter” l’effet des erreurs (on peut citer les sommations compensées, Salsa...), et celles visant à quantifier et mesurer les erreurs.
 Ma thèse fait écho à cette deuxième approche.
 Je vais me baser sur une riche littérature existante.
 De nombreux outils existent pour réaliser cette analyse, chacun ayant différentes entrées (programme, modèles, binaires…), et différentes contraintes.
@@ -242,6 +244,7 @@ Rédaction de la thèse.
 -- Désormais résolu, efforts canalisés et bien aiguillés\\
 
 
-
+\bibliography{bibliography/bibCSI}{}
+\bibliographystyle{plain}
 
 \end{document}
