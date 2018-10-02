@@ -33,18 +33,20 @@ Après l’obtention d’un Bac S spé maths (mention bien) à Toulouse, j’ai 
 % PRESENTATION THESE
 \subsection{Contexte}
 Le contexte dans lequel se place mon sujet de thèse est double.
-D’un côté, on s’intéresse à l’\textbf{arithmétique flottante}. Les nombres flottants sont une discrétisation des nombres réels. 
+D’un côté, on s’intéresse à l’\textbf{arithmétique flottante}. \\
+Les nombres flottants peuvent se définir comme une discrétisation des nombres réels. 
+Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour représenter nombres flottants (en l'occurence $s$ étant le bit de signe, $e$ l'exposant et $m$ la mantisse). Il fournit aussi des \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}. On peut citer le format simple précision, le format double précision etc. \\
 \begin{figure}[b]
   \begin{center}
     \includegraphics[width=12cm]{Floating_point_numbers_discretization}
-    \caption{Exemple de discretisation des nombres réels en nombres flottants. Source : Goldberg, D. (1991). What every computer scientist should know about floating-point arithmetic. ACM Computing Surveys (CSUR), 23(1), 5-48.\cite{goldberg1991every}}
+    \caption{Exemple de discretisation des nombres réels en nombres flottants. Source : \cite{goldberg1991every}}
     \label{discretization}
   \end{center}
 \end{figure}
-Prenons l'exemple d'une discrétisation flottante des nombre réels (Figure ~\ref{discretization}) selon les paramètres suivants : $\beta=2, p=3, e_{min}=-1,e_{max}=2$, avec $\beta$ la base, $p$ la précision, $e_{min}$ l'exposant minimal, $e_{max}$ l'exposant maximal.
+Prenons l'exemple d'une telle discrétisation (Figure ~\ref{discretization}) selon les paramètres suivants : $\beta=2, p=3, e_{min}=-1,e_{max}=2$, avec $\beta$ la base, $p$ la précision (soit le nombre de bits de la mantisse), $e_{min}$ l'exposant minimal et $e_{max}$ l'exposant maximal.
 Sur l'exemple, on voit bien que $1,25$ est représentable ($1.01*2^{0}$), de même que $3$ ($1.10*2^{1}$). Bien que la somme de ces deux réels donne $3,25$, la somme flottante de ces deux nombres flottants donne elle $3$ (après arrondi), car $3,25$ n'est pas représentable exactement dans ces conditions.
-Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour représenter nombres flottants. Il fournit aussi des \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}. On peut citer le format simple précision, le format double précision etc. \\
-Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux \textbf{erreurs d'arrondi}, comme dans le cas cité ci-dessus, où $3,25$ a dû être arrondi à $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi citer les \textbf{erreurs de cancellation}, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. \\ % TODO exemple.
+
+Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux \textbf{erreurs d'arrondi}, comme dans le cas cité ci-dessus où $3,25$ a dû être arrondi à $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi citer les \textbf{erreurs de cancellation}, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. \\ % TODO exemple.
 Hors, lorsque l’on simule un modèle qui comprend de nombreux calculs (super calculateurs, vastes simulations à exécution longue), les différentes erreurs s’accumulent, se combinent, et finalement affectent le résultat.
 
 Le deuxième volet de ma thèse porte sur ce domaine, celui de la \textbf{recherche d'erreurs numériques dans les programmes}.
@@ -65,7 +67,7 @@ La riche littérature existante fait état de nombreux outils pouvant réaliser 
 On s’intéresse ici à deux approches probabilistes en particulier : la méthode CESTAC\footnote{\underline{C}ontrole et \underline{E}stimation \underline{S}tochastique des \underline{A}rrondis de \underline{C}alculs}, et l’arithmétique de Monte Carlo\footnote{ou MCA (\underline{M}onte \underline{C}arlo \underline{A}rithmetic)}.
 La méthode CESTAC\cite{pichat1993ingenierie} utilise un grand nombre de tirages pour approximer efficacement le nombre de bits significatifs du résultat.
 DSA\footnote{\underline{D}iscrete \underline{S}tochastic \underline{A}rithmetic}\cite{vignes2004discrete}, basée sur CESTAC, redéfinit quant à elle les opérateurs relationnels pour effectuer chaque opération $N$ fois, en changeant aléatoirement le mode d’arrondi (et définit aussi les notions de nombre stochastique et de zéro stochastique).
-Enfin, CADNA\footnote{\underline{C}ontrol of \underline{A}ccuracy and \underline{D}ebugging for \underline{N}umerical \underline{A}pplication}\cite{jezequel2008cadna} implémente DSA pour $N=3$, où les deux premiers modes d’arrondis sont choisis aléatoirement, et où le troisième est différent du second.
+Enfin, CADNA\footnote{\underline{C}ontrol of \underline{A}ccuracy and \underline{D}ebugging for \underline{N}umerical \underline{A}pplication}\cite{jezequel2008cadna} implémente DSA pour $N=3$, où les deux premiers modes d’arrondis sont choisis aléatoirement, et où le troisième est différent du second. \\
 Parallèlement, MCA\cite{parker1997monte} permet une analyse de sensibilité, en utilisant notamment un \textit{arrondi randomisé} pour ajouter du bruit aux nombres flottants, à l'aide d'une variable aléatoire uniformément distribuée, afin de quantifier et compenser les erreurs d'arrondi notamment.
 Finalement, Verificarlo\cite{denis2015verificarlo} est une implémentation de MCA utilisant LLVM\footnote{\url{https://llvm.org/}} pour la portabilité.
 On citera aussi FPANR\footnote{\underline{F}loating-\underline{P}oint \underline{A}daptive \underline{N}oise \underline{R}eduction}\cite{defour2018fp}, encodage proposé par David Defour, qui comme on va le voir encode astucieusement la précision dans la mantisse.
@@ -85,29 +87,32 @@ On citera aussi FPANR\footnote{\underline{F}loating-\underline{P}oint \underline
 \section{Travail réalisé}
 
 \subsection{Arrondi randomisé }
-Nous avons utilisé nspiré de MCA
-exemple RNDN arrondi toujours 0,49
-résout potentiellement des problèmes d’accumulation d’erreurs d’arrondi
+Nous avons utilisé l'arrondi randomisé, inspiré du \textit{round\_ random\_nearness} de MCA. 
+La motivation est simple : à la fois tracer les erreurs en utilisant notamment l'écart type des tirages, ainsi que \textit{compenser statistiquements} les erreurs d'arrondis à l'aide du grand nombre de tirage.
+Le principe est le suivant : au lieu d'arrondi au flottant le plus proche, comme le préconiserait l'arrondi au plus près, mode d'arrondi standard et largement utilisé, l'arrondi randomisé va introduire une variable aléatoire uniformément distribuée pour déterminer le sens de l'arrondi (vers le \textit{haut} ou vers le \textit{bas}).
+La probabilité d'arrondir au flottant supérieur (resp. inférieur) à la valeur réelle que l'on souhaite arrondir \textbf{est inversement proportionnelle à la distance de ce réel au flottant supérieur (resp. inférieur)}. En somme, là où l'arrondi au plus près arrondit toujours $0,49$ à $0$, l'arrondi randomisé arrondira $0,49$ à $0$ avec une probabilité $P(\lfloor x\rfloor )=0,51$ et arrondira à $1$ avec une probabilité $P(\lfloor x\rfloor + \epsilon)=0,49$, $\epsilon$ correspondant à l'\textit{epsilon machine}, soit l'erreur relative maximale due à une erreur d'arrondi pour cette base et cette précision. En résumé, l'arrondi randomisé peut réduire les problèmes d'accumulation d'erreurs d'arrondis, mais de manière \textit{statistique} (et non locale).
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=9cm]{random_rounding}
+    \caption{Exemple d'arrondi randomisé}
+    \label{random_rounding}
+  \end{center}
+\end{figure}
 
-Entraîner des réseaux de neurones avec des formats restreint (en fixed-point), à faible précision, et observer la sensibilité de l’apprentissage au mode d’arrondi.
-Quand ils diminuent trop la précision, on observe un phénomène de divergence. Pour compenser, ils introduisent un arrondi randomisé.
-Ils observent dans ce cas que la différence peut aller d’une divergence du gradient à une convergence!
-L’idée est donc de tester cet arrondi randomisé dans d’autres cas, et finalement reproduire leurs résultats.
-Une piste intéressante pour expliquer cette convergence est que l’introduction de bruit s’avère positive dans l’apprentissage de CNN : on l’ajoute donc volontairement lors de l’entraînement. De la même façon, il serait intéressant de voir dans quelle mesure le bruit induit par l’arrondi stochastique pourrait avoir un impact sur l’apprentissage.
+On s'intéressera notamment à l'article \textit{Deep Learning with Limited Numerical Precision}\cite{gupta2015deep}, où leur démarche est d'entraîner des réseaux de neurones avec des formats restreints (en fixed-point), à faible précision, pour observer la sensibilité de l’apprentissage au mode d’arrondi.
+Ils observent que lorsque la précision diminue trop, un phénomène de divergence dans l'apprentissage se dessine. Pour compenser, ils introduisent un arrondi randomisé.
+Dans ce cas, ils notent qu'en fonction du mode d'arrondi, on peut observer une divergence du gradient ou une convergence (en faveur de l'arrondi randomisé).
+L’idée est donc de tester cet arrondi randomisé dans d’autres cas, et finalement reproduire leurs résultats, les approfondir et les expliquer.
+Une piste intéressante pour expliquer cette convergence est que l’introduction de bruit s’avère positive dans l’apprentissage de CNN : on l’ajoute donc volontairement lors de l’entraînement. De la même façon, il serait intéressant de voir dans quelle mesure le bruit induit par l’arrondi stochastique pourrait avoir un impact positif sur l’apprentissage.
+\\
+Avant cela, nous avons souhaité tester l’arrondi randomisé sur des procédés connus pour être numériquement instables. En l'ocurrence, le gradient conjugué, et l'attracteur de Lorenz. Le gradient conjugué est un procédé itératif permettant de résoudre des systèmes d’équations linéaires\cite{shewchuk1994introduction}.
+L'attracteur de Lorenz, procédé itératif utilisé notamment en météorologie, s'avère d'autnat plus sensible à l'accumulation d'erreurs dans les calculs flottants, donc potentiellement au mode d’arrondi utilisé.
+%“procédé itératif (llorenz), impact sur l’accumulation d’erreur ?”
 
+L’implémentation de ces deux procédés a été assez complexe, puisqu’il a fallu utiliser un mode d’arrondi codé \textit{à la main} dans chaque opération.
+Chaque programme est ensuite exécuté une fois avec les modes d'arrondis \textit{communs}, puis de multiples fois avec l'arrondi stochastique, dont on récolte finalement la moyenne ainsi que l'écart type des valeurs finales.
 
-On a voulu tester l’arrondi randomisé sur des procédés connus pour être numériquement instables.
-Applications : 
-Gradient conjugué, procédé itératif, résout des systèmes d’équations linéaires.
-Lorenz Procédé sensible à la précision dans les calculs flottants, donc potentiellement au mode d’arrondi utilisé.
-“procédé itératif (llorenz), impact sur l’accumulation d’erreur ?”
-
-l’implémentation a été assez complexe, puisqu’il fallait utiliser un mode d’arrondi codé “à la main” dans chaque opération
-
-on exécute tout ça de multiples fois (1000 fois environ les premières fois si je ne m’abuse (évidemment le temps d’exécution s’en fait sentir))
-Lorenz first
-
-\subsubsection{lorenz}
+\subsubsection{Lorenz}
 On se compare à un run “optimal”, réalisé avec une forte précision, et on compare les valeurs intermédiaires à ce résultat.
 Concernant les axes, on a deux échelles log, une pour le temps, les itérations, l’autre pour la distance à l’optimal (plus c’est haut, plus on s’éloigne).
 
