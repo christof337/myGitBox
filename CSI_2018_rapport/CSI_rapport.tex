@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{hyperref}
+\usepackage{array}
 
 \title{%
   Rapport d'avancement thèse ACSEL \\
@@ -168,76 +169,56 @@ Bien que je n'ai postulé à aucune conférence dans l'immédiat, j'ai été cha
 Dans un deuxième temps, une publication contenant les bancs de tests réalisés sur la bibliothèque FPANR, sur les SPEC\footnote{\url{https://www.spec.org/cpu2006/}} notamment, sera proposée.
 
 \section{Planning prévisionnel}
+% analyser erreurs, (identifier).
+% intéresser sensibilité arrondi randomisé
+% commencé à me familiariser avec les erreurs numériques (gradient, DNN)
+% varier précision/mode d’arrondi, regarder comment cela impacte l’apprentissage
 Lors de cette première année, j'ai commencé à me familiariser avec les erreurs numériques sur des cas tels que la descente de gradient.
-J'ai pu observer le comportement et l’effet de l’arrondi randomisé sur des problèmes numériques.
+J'ai pu observer le comportement et l’effet de l’arrondi randomisé sur des problèmes numériques. 
+De plus, j'ai pu intégrer FPANR à LLVM, via Verificarlo, afin de tester facilement des cas généraux.
+Cette partie présente les jalons restant à réaliser tout au long de ma thèse\footnote{un planning détaillé peut être consulté à la table \ref{planning} en annexe (p\pageref{planning})}.
 
 \subsection{FPANR}
 Avant de nous confronter aux codes d'érosion du littoral de GLADYS, nous tenons à confronter les outils développés jusqu'ici à des jeux de données reconnus dans le domaine : les SPEC. La publication de ces résultats occupera la fin de l'année 2018. \\
 Dans un deuxième temps, on observe que FPANR peut potentiellement perdre rapidement de la précision ; envisager un modèle hybride croisé avec l'arrondi randomisé pourra s'envisager dans un deuxième temps.
 
 \subsection{Arrondi randomisé}
-La reproduction des résultats de Gupta & al.\cite{gupta2015deep} sera au cœur de cet objectif. On se basera pour cela sur la bibliothèque déjà implémentée lors de la première année de thèse. Une fois ceci fait, et une fois d'autres métriques implémentées sur les cas de Lorenz et du Gradient conjugué (telles que le nombre de bits perdus dans le premier cas ou le degré de convergence dans le second), s'atteler à leur publication.
+La reproduction des résultats de Gupta \& al.\cite{gupta2015deep} sera au cœur de cet objectif, prolongeant l'étude sur la descente de gradient - en ce sens que l'apprentissage des réseaux de neurones se base lui aussi sur une descente de gradient. On se basera pour cela sur la bibliothèque déjà implémentée lors de la première année de thèse. Une fois ceci fait, et une fois d'autres métriques implémentées sur les cas de Lorenz et du Gradient conjugué (telles que le nombre de bits perdus dans le premier cas ou le degré de convergence dans le second), s'atteler à leur publication.
 
 \subsection{GLADYS}
-Une fois notre outil confronté aux initiatives existantes, la réalisation de 
-Confrontation
-verificarlo, cadna, qui pourront me servir de repères
+% Confrontation
+% automatic differentiation, verificarlo, cadna, qui sont d’autres outils dans le domaine, qui pourront me servir de repères
+%l’objectif de ma thèse c’est de voir un vrai code. aidé par des experts qu’on a dans la région, qui sont compétents sur le sujet : les modèles et simulations de Gladys.
+Une fois notre outil confronté aux initiatives existantes, qui auront servi de repères, la vocation centrale de la thèse ACSEL se matérialisera en l'appliquant aux modèles de prédiction d'érosion du littoral de GLADYS. Les problématiques traitées par cette communauté ont une réelle portée sociétale et écologique (montée des eaux, immobilier, tourisme, etc), qui est une motivation supplémentaire à contribuer à ce travail.
+% Application aux modèles de prédiction d’érosion du littoral de GLADYS
+%Récolte de statistiques sur les programmes par méthode de Monte Carlo
+Pour cela, je pourrai m'appuyer sur les experts que nous avons dans la région, compétents sur le sujet.
+Concernant le choix du modèle et de la simulation à étudier, un rapport de critères sera fourni à Frederic Bouchette, référent côté Gladys, pour lesdites simulations, et membre du CSI. Après étude de ce dernier et discussions, des simulations seront choisies en fonction de leurs caractéristiques pour servir de sujet d'étude à cette thèse.
+On s'appliquera à étudier des simulations qui présentent potentiellement des erreurs numériques, afin de valider notre démarche tout en ayant un réel apport auprès des chercheurs de cette communauté.
+\\
+Ensuite, on se propose de récolter les statistiques sur les programmes étudiés, notamment par méthode de Monte Carlo.
+Enfin, on procèdera à l'extraction de l'information pertinente de ces statistiques, en utilisant des méthodes de Data Mining (Random Forest...).
+Ces informations seront en dernier lieu délivrées dans un format intelligible à l'utilisateur.
+% Récolte de statistiques sur les programmes par méthode de Monte Carlo
+%Application aux modèles de prédiction d’érosion du littoral de GLADYS
 
-Application aux modèles de prédiction d’érosion du littoral de GLADYS
-Récolte de statistiques sur les programmes par méthode de Monte Carlo
+%finalement, l’idée sera d’extraire l’information pertinente de ces statistiques, avec des méthodes de Data Mining (Random Forest)
+%et de la délivrer à un format intelligible à l’utilisateur, via des indicateurs (voire des recommandations).
+%Pour un plus large champ d’application  ==> LLVM
 
-finalement, l’idée sera d’extraire l’information pertinente de ces statistiques, avec des méthodes de Data Mining (Random Forest)
-et de la délivrer à un format intelligible à l’utilisateur, via des indicateurs (voire des recommandations).
-Pour un plus large champ d’application  ==> LLVM
+% (; et de le faire de manière assez générique pour que cela s’applique aux modèles de gladys - mais pas uniquement.
+% (faire un outil qui pourra être applicable dans différents domaines ; on envisageait d’utiliser l’outil de compilation libre LLVM, pour réaliser des passes automatiques dans les implémentations des modèles afin d’en extraire de l’information par exemple)
+% analyse descriptive)
 
- (; et de le faire de manière assez générique pour que cela s’applique aux modèles de gladys - mais pas uniquement.
-(faire un outil qui pourra être applicable dans différents domaines ; on envisageait d’utiliser l’outil de compilation libre LLVM, pour réaliser des passes automatiques dans les implémentations des modèles afin d’en extraire de l’information par exemple)
-analyse descriptive)
-
-
-analyser erreurs, (identifier).
-intéresser sensibilité arrondi randomisé
-
-commencé à me familiariser avec les erreurs numériques (gradient, DNN)
-varier précision/mode d’arrondi, regarder comment cela impacte l’apprentissage
-
-Confrontation
-automatic differentiation, verificarlo, cadna, qui sont d’autres outils dans le domaine, qui pourront me servir de repères
-
-Application aux modèles de prédiction d’érosion du littoral de GLADYS
-Récolte de statistiques sur les programmes par méthode de Monte Carlo
-
-finalement, l’idée sera d’extraire l’information pertinente de ces statistiques, avec des méthodes de Data Mining (Random Forest)
-et de la délivrer à un format intelligible à l’utilisateur, via des indicateurs (voire des recommandations).
-Pour un plus large champ d’application ==> LLVM
-
- (; et de le faire de manière assez générique pour que cela s’applique aux modèles de gladys - mais pas uniquement.
-(faire un outil qui pourra être applicable dans différents domaines ; on envisageait d’utiliser l’outil de compilation libre LLVM, pour réaliser des passes automatiques dans les implémentations des modèles afin d’en extraire de l’information par exemple)
-analyse descriptive)
-
-
-\subsection{FPANR - SPEC}
-Avant de passer notre outil sur les codes de Gladys, on tient à les confronter à des jeux de données reconnus dans le domaine (et moins volumineux) : les SPEC.
-Passer notre outil FPANR sur les SPEC, afin de produire des résultats renforçant  la publication. Les spec sont des jeux de données standardisés qui seront un excellent “test” des capacités de la bibliothèque implémentée
-==> conversions, il faut gérer les entrées sorties. Pour ça, deux solutions : soit via des fonctions à intégrer directement et manuellement dans le code (version simple pour avoir des résultats dans les spec). Solution idéale, détecter ces conversions dans LLVM, et les remplacer automatiquement (nécessite de s’intégrer à Clang pour créer un type particulier). D’autres solutions, notamment via des pragma, mais on en discute encore.
-
-\subsection{Arrondi randomisé}
-vu que on voit que FPANR peut vite perdre de la précision, on va éventuellement appliquer l’arrondi randomisé dans le cadre de FPANR
-
-prolonger la descente de gradient en étudiant les réseaux de neurones
-
-
-\subsection{Gladys}
-l’objectif de ma thèse c’est de voir un vrai code. aidé par des experts qu’on a dans la région, qui sont compétents sur le sujet : les modèles et simulations de Gladys.
-De plus, les problèmes traités ont un réel impact sociétal (montée des eaux, écologie, immobilier, etc).
-
-Une fois qu’on aura un outil assez abouti, passer ça sur Gladys
 \subsection{Rédaction}
-Rédaction de la thèse.
+Tout au long de ma thèse, et à fortiori durant la dernière année, il sera indispensable de commencer à rédiger la thèse en elle-même.
+Le rythme de rédaction devra aller croissant à partir de maintenant. Je pourrais me baser sur la capitalisation d'informations déjà réalisée notamment sur l'arrondi randomisé, ainsi que sur certains éléments présentés dans le présent documents.
 
 \section{Difficultés rencontrées}
-
-
+Il m'a été difficile de déterminer, d'un point de vue \textit{scientifique}, quels résultats étaient significatifs (ou non), à fortiori lors de l'étude de l'arrondi randomisé. J'aurais aimé tester davantage de cas mettant en valeur l'arrondi randomisé, à fortiori des cas où son impact est significatif.
+Je n'étais pas certain que les résultats obtenus sur les cas étudiés étaient \textit{suffisants}, dans le sens \textit{probants} car utiles à la communauté scientifique. Cela a quelque peu miné mon avancement et soulevé de nombreux doutes. Désormais, une meilleure connaissance de l'état de l'art me permets d'être plus confiant à ce niveau.\\
+Dans un deuxième registre, commencer à rédiger l'article sur l'arrondi randomisé (et le faire régulièrement au fil de mes progrès) a été toute une procédure à mettre en place pour moi : je n'avais pas l'habitude de formaliser aussi explicitement ma pensée sur un projet, en l'ocurrence de recherche, aussi cela m'a pris du temps avant d'y parvenir.\\
+Dans un dernier temps, j'ai observé une difficulté à prendre du recul sur le travail, et une tendance à s'enfoncer sur des points de blocage, sans parvenir à formuler des appels à l'aide qui auraient permis de débloquer rapidement ces points. A l'avenir, des efforts doivent être mis en œuvre pour consulter plus régulièrement les intervenants aptes à résoudre mes éventuels problèmes, qu'ils soient d'ordre technique ou théoriques.
 %21. Questions
 %différence DSA (CESTAC) / MCA :
 %DSA : on run chaque opération N fois
@@ -247,19 +228,94 @@ Rédaction de la thèse.
 %==> passage du monde de l’industrie à la recherche qui m’a demandé de l’adaptation ; maintenant je pense que je suis sur la bonne voie
 
 %25. Difficultés
-- Obtention résultats arrondi randomisé\\
--- Qu’est-ce qui est significatif? \\
--- Problématique intrinsèque à la démarche de recherche\\
--- les cas d’utilisations mettant en valeur l’arrondi randomisé : j’aurais du en avoir plus\\
--- l’article aurait pu être publié selon Bijan, et non selon David : or moi la partie DNN m’intéresse beaucoup (voire de m’orienter là dedans plus tard) donc je tenais à l’intégrer à l’article et donc à continuer à chercher\\
-- Perte massive de données au début de l’été 2018\\
-- Difficulté de rédaction de l’article\\
--- Méthode scientifique autant que de rédaction complexe à mettre en oeuvre\\
-- Manque de recul, désorientation quant à la méthode de travail\\
--- Désormais résolu, efforts canalisés et bien aiguillés\\
-
+%- Obtention résultats arrondi randomisé\\
+%-- Qu’est-ce qui est significatif? \\
+%-- Problématique intrinsèque à la démarche de recherche\\
+%-- les cas d’utilisations mettant en valeur l’arrondi randomisé : j’aurais du en avoir plus\\
+%-- l’article aurait pu être publié selon Bijan, et non selon David : or moi la partie DNN m’intéresse beaucoup (voire de m’orienter là dedans plus tard) donc je tenais à l’intégrer à l’article et donc à continuer à chercher\\
+%- Perte massive de données au début de l’été 2018\\
+%- Difficulté de rédaction de l’article\\
+%-- Méthode scientifique autant que de rédaction complexe à mettre en oeuvre\\
+%- Manque de recul, désorientation quant à la méthode de travail\\
+%-- Désormais résolu, efforts canalisés et bien aiguillés\\
 
 \bibliography{bibliography/bibCSI}{}
 \bibliographystyle{plain}
+
+\section{Annexe : Planning détaillé}
+\begin{table}[h]
+	\caption{Planning détaillé - 2018}
+	\label{planning}
+
+	\centering
+	%\begin{center}
+	%\begin{tabular}{c|c|p{20em}}
+	\begin{tabular}{c|p{25em}}
+		\hline
+			%semaines 39-40 & 24/09 - 03/10 & Planification détaillée du projet de thèse, capitalisation avancement dans un rapport \\ 
+		 semaine 40 (Oct-18) & Planification détaillée du projet de thèse, capitalisation avancement dans un rapport \\ 
+		 & \\
+		 	%semaines 40-41 & 04/10 - 12/10 & Création de la bibliothèque de conversion pour FPANR, intégration à Verificarlo, rédaction des tests correspondants \\
+		 semaine 41 (Oct-18) & Création de la bibliothèque de conversion pour FPANR, intégration à Verificarlo, rédaction des tests correspondants \\
+		 & \\
+		 	%semaine 42 		& 14/10 - 19/10	& Participation à la formation doctoriales \\
+		 semaine 42 (Oct-18)	& Participation à la formation doctoriales \\
+		 & \\
+		 	%semaine 43			& 22/10 - 26/10 & Familiarisation avec la documentation complète des SPEC, afin de manipuler leur jeux de données \\
+		 semaine 43	(Oct-18) & Familiarisation avec la documentation complète des SPEC, afin de manipuler leur jeux de données \\
+		 & \\
+		 	%semaines 43-45 & 22/10 - 09/11 & En parallèle, travailler sur l'automatisation de la conversion des entrées/sorties  \\
+		 semaines 43-45 (Oct-18) & En parallèle, travailler sur l'automatisation de la conversion des entrées/sorties  \\
+		 & \\
+		 	%semaines 44-45	&	29/10 - 06/11 & Application de FPANR/LLVM à un jeu de données simple des SPEC, pour tester la faisabilité de la démarche \\
+		 semaine 44 (Nov-18) & Prise en main des SPEC, compilation, exécution et maitrise d'un cas d'exemple \\
+		 & \\
+		 semaine 45 (Nov-18) & Application de FPANR/LLVM à quelques jeux de données simples des SPEC, pour tester la faisabilité de la démarche \\
+		 & \\
+		 semaine 46 (Nov-18) & Appréciation de la démarche, retour critique sur les fonctionnalités et les spécifications de la librairie FPANR \\
+		 & \\
+		 semaines 47-48 (Nov-18) & Compilation et exécution des jeux de données SPEC via FPANR/LLVM \\
+		 & \\
+		 semaine 49 (Dec-18) & Récolte et formatage des résultats \\
+		 & \\
+		 semaines 50-51 (Dec-18) & Rédaction et publication des résultats FPANR \\
+		 \end{tabular}
+	%\end{center}
+\end{table} 
+
+\begin{table}[h]
+	\caption{Planning détaillé - 2019/2020}
+	\centering
+	%\begin{center}
+	%\begin{tabular}{c|c|p{20em}}
+	\begin{tabular}{c|p{22em}}
+		\hline
+		 semaines 1-4 (Jan-19) & Retour sur l'arrondi randomisé, regénération pertinente des résultats du gradient et de Lorenz \\
+		 & \\
+		 semaines 5-8 (Feb-19) & Reproduction des résultats de Gupta : entraînement de réseaux de neurones avec un arrondi randomisé (+ bibliographie) \\
+		 & \\
+		 semaines 9-13 (Mar-19) & Perfection des résultats, rédaction article \\
+		 & \\
+		 semaines 14-17 (Apr-19) & Rédaction spécifications programmes Gladys + intégrations des retours de la revue par les pairs \\
+		 & \\
+		 semaines 18-21 (May-19) & Prise en main des simulations de Gladys, compréhension fonctionnement, fil d'exécution \\
+		 & \\
+		 semaines 22-26 (Jun-19) & Modélisation des métriques et indicateurs à mettre en place \\
+		 & \\
+		 semaines 27-30 (Jul-19) & Mise en place des indicateurs, début d'application de notre outil \\
+		 & \\
+		 semaines 31-34 (Aug-19) & Itérations sur les simulations, tests et récolte de données \\
+		 & \\	
+		 semaines 36/2019-22/2020 (19-20) & Rédaction thèse \\
+		 & \\
+		 semaines 36/2019-09/2020 (19-20) & En parallèle, exportation des indicateurs, automatisation de l'information à l'utilisateur, conclusions sur ce cas d'étude \\
+		 & \\
+		 semaines 10-22 (Mar-Jun - 20) & Valorisation, contribution à des colloques, séminaires \\
+		 & \\
+		 semaines 23-35 (Jul-Sept - 20) & Préparation thèse, soutenance de thèse
+	\end{tabular}
+	%\end{center}
+\end{table}
+
 
 \end{document}
