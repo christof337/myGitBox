@@ -34,9 +34,11 @@ Après l’obtention d’un Bac S spé maths (mention bien) à Toulouse, j’ai 
 % PRESENTATION THESE
 \subsection{Contexte}
 Le contexte dans lequel se place mon sujet de thèse est double.
-D’un côté, on s’intéresse à l’\textbf{arithmétique flottante}. \\
+D’une part, on s’intéresse à l’\textbf{arithmétique flottante}, de l'autre à l'\textbf{analyse d'erreur}. 
+
 Les nombres flottants peuvent se définir comme une discrétisation des nombres réels. 
-Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour représenter nombres flottants (en l'occurence $s$ étant le bit de signe, $e$ l'exposant et $m$ la mantisse). Il fournit aussi des \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}. On peut citer le format simple précision, le format double précision etc. \\
+Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour représenter les nombres flottants (en l'occurence $s$ étant le bit de signe, $e$ l'exposant et $m$ la mantisse). Les \textbf{formats}, qui définissent la façon dont chaque nombre flottant est \textbf{encodé}, sont entre autres le format simple précision ou le format double précision.
+
 \begin{figure}[b]
   \begin{center}
     \includegraphics[width=12cm]{Floating_point_numbers_discretization}
@@ -44,14 +46,16 @@ Le Standard IEEE 754\cite{zuras2008ieee} définit 3 entiers $(s,e,m)$ pour repr�
     \label{discretization}
   \end{center}
 \end{figure}
+
 Prenons l'exemple d'une telle discrétisation (Figure ~\ref{discretization}) selon les paramètres suivants : $\beta=2, p=3, e_{min}=-1,e_{max}=2$, avec $\beta$ la base, $p$ la précision (soit le nombre de bits de la mantisse), $e_{min}$ l'exposant minimal et $e_{max}$ l'exposant maximal.
 Sur l'exemple, on voit bien que $1,25$ est représentable ($1.01*2^{0}$), de même que $3$ ($1.10*2^{1}$). Bien que la somme de ces deux réels donne $3,25$, la somme flottante de ces deux nombres flottants donne elle $3$ (après arrondi), car $3,25$ n'est pas représentable exactement dans ces conditions.
 
-Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux \textbf{erreurs d'arrondi}, comme dans le cas cité ci-dessus où $3,25$ a dû être arrondi à $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi citer les \textbf{erreurs de cancellation}, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. \\ % TODO exemple.
+Malgré la définition d'un standard, l'arithmétique flottante est soumise à de multiples erreurs. On pense notamment aux \textbf{erreurs d'arrondi}, comme dans le cas cité ci-dessus où $3,25$ a dû être arrondi à $3$, entraînant la \textit{perte} de $0,25$. Mais on peut aussi citer les \textbf{erreurs de cancellation}, qui surviennent lorsque l'on soustrait deux grandes valeurs très proches l'une de l'autre, révélant la perte de nombre significatifs lors de précédents calculs. % TODO exemple.
+
 Hors, lorsque l’on simule un modèle qui comprend de nombreux calculs (super calculateurs, vastes simulations à exécution longue), les différentes erreurs s’accumulent, se combinent, et finalement affectent le résultat.
 
 Le deuxième volet de ma thèse porte sur ce domaine, celui de la \textbf{recherche d'erreurs numériques dans les programmes}.
-Le cas d’étude de ma thèse porte sur les modèles et simulations de \textbf{Gladys}\footnote{\url{http://www.gladys-littoral.org}}.
+Le cas d’étude de ma thèse porte sur les modèles et simulations de \textbf{Gladys}\cite{gladysweb}.
 Gladys est un réseau international de littoralistes en méditerranée, regroupant de nombreux chercheurs dans le domaine du littoral.
 Ils ont établi de nombreux modèles pour décrire les phénomènes afférents à leur activité, notamment le phénomène \textbf{d’évolution du trait de côte}.
 L’implémentation informatique de ce modèle sera le sujet d’étude de ma thèse (un code volumineux en C et Fortran). Il prend des données en entrée et réalise sa simulation. C'est ici que viendra se placer mon travail. Le principe recherché est de \textbf{compiler} le programme, puis d’en produire une analyse visant à suivre et quantifier les erreurs liées à l’arithmétique flottante.
@@ -62,15 +66,16 @@ L’implémentation informatique de ce modèle sera le sujet d’étude de ma th
 
 \subsection{État de l’art}
 
-On peut distinguer deux catégories d'initiatives existantes dans le domaine : les démarches visant à \textit{limiter} l’effet des erreurs (on peut citer les sommations compensées\cite{Demmel2006ErrorBF}, Salsa\cite{damouche2016amelioration}...), et celles visant à quantifier et mesurer les erreurs.
+La recherche sur l'arithmétique flottante et ses propriétés a fait émerger deux catégories d'initiatives : les démarches visant à \textit{limiter} l’effet des erreurs (on peut citer les sommations compensées\cite{Demmel2006ErrorBF}, Salsa\cite{damouche2016amelioration}...), et celles visant à quantifier et mesurer les erreurs.
 Ma thèse fait écho à cette deuxième approche.
-La riche littérature existante fait état de nombreux outils pouvant réaliser cette analyse. Chacun dispose cependant de différentes entrées (programmes, modèles, binaires…), et différentes contraintes.
-On s’intéresse ici à deux approches probabilistes en particulier : la méthode CESTAC\footnote{\underline{C}ontrole et \underline{E}stimation \underline{S}tochastique des \underline{A}rrondis de \underline{C}alculs}, et l’arithmétique de Monte Carlo\footnote{ou MCA (\underline{M}onte \underline{C}arlo \underline{A}rithmetic)}.
+La riche littérature existante fait état de nombreux outils pouvant réaliser cette analyse (analyse statique\cite{goubault2001static}, dynamique\cite{jeffrey2011dynamic}, par intervalles\cite{hansen1965interval}...). Chacun dispose cependant de différentes entrées (programmes, modèles, binaires…), et différentes contraintes.
+On s’intéresse à deux approches probabilistes en particulier : la méthode CESTAC\footnote{\underline{C}ontrole et \underline{E}stimation \underline{S}tochastique des \underline{A}rrondis de \underline{C}alculs}, et l’arithmétique de Monte Carlo\footnote{ou MCA (\underline{M}onte \underline{C}arlo \underline{A}rithmetic)}.
 La méthode CESTAC\cite{pichat1993ingenierie} utilise un grand nombre de tirages pour approximer efficacement le nombre de bits significatifs du résultat.
 DSA\footnote{\underline{D}iscrete \underline{S}tochastic \underline{A}rithmetic}\cite{vignes2004discrete}, basée sur CESTAC, redéfinit quant à elle les opérateurs relationnels pour effectuer chaque opération $N$ fois, en changeant aléatoirement le mode d’arrondi (et définit aussi les notions de nombre stochastique et de zéro stochastique).
-Enfin, CADNA\footnote{\underline{C}ontrol of \underline{A}ccuracy and \underline{D}ebugging for \underline{N}umerical \underline{A}pplication}\cite{jezequel2008cadna} implémente DSA pour $N=3$, où les deux premiers modes d’arrondis sont choisis aléatoirement, et où le troisième est différent du second. \\
+Enfin, CADNA\footnote{\underline{C}ontrol of \underline{A}ccuracy and \underline{D}ebugging for \underline{N}umerical \underline{A}pplication}\cite{jezequel2008cadna} implémente DSA pour $N=3$, où les deux premiers modes d’arrondis sont choisis aléatoirement, et où le troisième est différent du second. L'outil en question permet de tracer la propagation des erreurs d'arrondi, et de détecter les instabilités numériques à l'exécution. 
+
 Parallèlement, MCA\cite{parker1997monte} permet une analyse de sensibilité, en utilisant notamment un \textit{arrondi randomisé} pour ajouter du bruit aux nombres flottants, à l'aide d'une variable aléatoire uniformément distribuée, afin de quantifier et compenser les erreurs d'arrondi notamment.
-Finalement, Verificarlo\cite{denis2015verificarlo} est une implémentation de MCA utilisant LLVM\footnote{\url{https://llvm.org/}} pour la portabilité.
+Finalement, Verificarlo\cite{denis2015verificarlo} est une implémentation de MCA utilisant LLVM\cite{llvmweb} pour la portabilité.
 On citera aussi FPANR\footnote{\underline{F}loating-\underline{P}oint \underline{A}daptive \underline{N}oise \underline{R}eduction}\cite{defour2018fp}, encodage proposé par David Defour, qui comme on va le voir encode astucieusement la précision dans la mantisse.
 
 %MCA et DSA : deux méthodes probabilistes vérifier précision arithmétique
@@ -89,9 +94,9 @@ On citera aussi FPANR\footnote{\underline{F}loating-\underline{P}oint \underline
 
 \subsection{Arrondi randomisé }
 Nous avons utilisé l'arrondi randomisé, inspiré du \textit{round\_ random\_nearness} de MCA. 
-La motivation est simple : à la fois tracer les erreurs en utilisant notamment l'écart type des tirages, ainsi que \textit{compenser statistiquements} les erreurs d'arrondis à l'aide du grand nombre de tirage.
-Le principe est le suivant : au lieu d'arrondi au flottant le plus proche, comme le préconiserait l'arrondi au plus près, mode d'arrondi standard et largement utilisé, l'arrondi randomisé va introduire une variable aléatoire uniformément distribuée pour déterminer le sens de l'arrondi (vers le \textit{haut} ou vers le \textit{bas}).
-La probabilité d'arrondir au flottant supérieur (resp. inférieur) à la valeur réelle que l'on souhaite arrondir \textbf{est inversement proportionnelle à la distance de ce réel au flottant supérieur (resp. inférieur)}. En somme, là où l'arrondi au plus près arrondit toujours $0,49$ à $0$, l'arrondi randomisé arrondira $0,49$ à $0$ avec une probabilité $P(\lfloor x\rfloor )=0,51$ et arrondira à $1$ avec une probabilité $P(\lfloor x\rfloor + \epsilon)=0,49$, $\epsilon$ correspondant à l'\textit{epsilon machine}, soit l'erreur relative maximale due à une erreur d'arrondi pour cette base et cette précision. En résumé, l'arrondi randomisé peut réduire les problèmes d'accumulation d'erreurs d'arrondis, mais de manière \textit{statistique} (et non locale).
+La motivation est simple : à la fois tracer les erreurs en utilisant notamment l'écart type des tirages, ainsi que \textit{compenser statistiquement} les erreurs d'arrondis à l'aide d'un grand nombre de tirages.
+Le principe est le suivant : au lieu d'arrondir au flottant le plus proche, comme le préconiserait l'arrondi au plus près, mode d'arrondi \textit{standard}, l'arrondi randomisé va introduire une variable aléatoire uniformément distribuée pour déterminer le sens de l'arrondi (vers le \textit{haut} ou vers le \textit{bas}).
+La probabilité d'arrondir au flottant supérieur (resp. inférieur) la valeur réelle que l'on souhaite arrondir \textbf{est inversement proportionnelle à la distance de ce réel au flottant supérieur (resp. inférieur)}. En somme, là où l'arrondi au plus près arrondit toujours $0,49$ à $0$, l'arrondi randomisé arrondira $0,49$ à $0$ avec une probabilité $P(\lfloor x\rfloor )=0,51$ et arrondira à $1$ avec une probabilité $P(\lfloor x\rfloor + \epsilon)=0,49$, $\epsilon$ correspondant à l'\textit{epsilon machine}, soit l'erreur relative maximale due à une erreur d'arrondi pour cette base et cette précision. En résumé, l'arrondi randomisé peut réduire les problèmes d'accumulation d'erreurs d'arrondis, mais de manière \textit{statistique} (et non locale).
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=9cm]{random_rounding}
@@ -101,21 +106,22 @@ La probabilité d'arrondir au flottant supérieur (resp. inférieur) à la valeu
 \end{figure}
 
 On s'intéressera notamment à l'article \textit{Deep Learning with Limited Numerical Precision}\cite{gupta2015deep}, où leur démarche est d'entraîner des réseaux de neurones avec des formats restreints (en fixed-point), à faible précision, pour observer la sensibilité de l’apprentissage au mode d’arrondi.
-Ils observent que lorsque la précision diminue trop, un phénomène de divergence dans l'apprentissage se dessine. Pour compenser, ils introduisent un arrondi randomisé.
-Dans ce cas, ils notent qu'en fonction du mode d'arrondi, on peut observer une divergence du gradient ou une convergence (en faveur de l'arrondi randomisé).
+Ils observent que lorsque la précision diminue trop, un phénomène de divergence dans l'apprentissage apparaît. Pour compenser cet effet, ils introduisent un arrondi randomisé. A cette précision, et avec l'arrondi randomisé, le gradient converge alors.
+%Dans ce cas, le gradient converge en utilisant lils notent qu'en fonction du mode d'arrondi, on peut observer une divergence du gradient ou une convergence (en faveur de l'arrondi randomisé).
 L’idée est donc de tester cet arrondi randomisé dans d’autres cas, et finalement reproduire leurs résultats, les approfondir et les expliquer.
 Une piste intéressante pour expliquer cette convergence est que l’introduction de bruit s’avère positive dans l’apprentissage de CNN : on l’ajoute donc volontairement lors de l’entraînement. De la même façon, il serait intéressant de voir dans quelle mesure le bruit induit par l’arrondi stochastique pourrait avoir un impact positif sur l’apprentissage.
-\\
+
 Avant cela, nous avons souhaité tester l’arrondi randomisé sur des procédés connus pour être numériquement instables. En l'ocurrence, le gradient conjugué, et l'attracteur de Lorenz. Le gradient conjugué est un procédé itératif permettant de résoudre des systèmes d’équations linéaires\cite{shewchuk1994introduction}.
-L'attracteur de Lorenz, procédé itératif utilisé notamment en météorologie, s'avère d'autnat plus sensible à l'accumulation d'erreurs dans les calculs flottants, donc potentiellement au mode d’arrondi utilisé.
+L'attracteur de Lorenz, procédé itératif utilisé notamment en météorologie, se révèle lui aussi sensible à l'accumulation d'erreurs dans les calculs flottants, donc potentiellement au mode d’arrondi utilisé.
 %“procédé itératif (llorenz), impact sur l’accumulation d’erreur ?”
 
-L’implémentation de ces deux procédés a été assez complexe, puisqu’il a fallu utiliser un mode d’arrondi codé \textit{à la main} dans chaque opération.
+L’implémentation de ces deux procédés a été assez complexe, puisqu’il a fallu utiliser un mode d’arrondi codé \textit{à la main} pour chaque opération.
 Chaque programme est ensuite exécuté une fois avec les modes d'arrondis \textit{communs}, puis de multiples fois avec l'arrondi stochastique, dont on récolte finalement la moyenne ainsi que l'écart type des valeurs finales.
 
 \subsubsection{Lorenz}
-Les paramètres de l'attracteur de Lorenz utilisé sont $\sigma = 10$, $\rho = 28$ et $\beta = 8/3$. Aucun \textit{fine-tuning} n'a été réalisé pour l'heure sur ces paramètres : ceux par défaut ont été gardés.
-On compare les valeurs testées à une exécution considérée \textit{optimale}, réalisée avec une forte précision, et on obtient les résultats de la Figure \ref{Lorenz}.\\
+Les paramètres de l'attracteur de Lorenz utilisés sont $\sigma = 10$, $\rho = 28$ et $\beta = 8/3$. Aucun \textit{fine-tuning} n'a été réalisé pour l'heure sur ces paramètres : ceux par défaut ont été gardés.
+On compare les valeurs testées à une exécution considérée \textit{optimale}, réalisée avec une forte précision, et on obtient les résultats de la Figure \ref{Lorenz}.
+
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=15cm]{distance_prec=53_logx}
@@ -123,15 +129,15 @@ On compare les valeurs testées à une exécution considérée \textit{optimale}
 		\label{Lorenz}
 	\end{center}
 \end{figure}
-Les axes en échelle logarithmique représentent en abscisse le temps (en nombre d'itérations) et en ordonnée la distance relative à l’optimal. Plus cette distance est grande, plus on s'éloigne de la valeur \textit{correcte}.
 
-On observe clairement les conséquences de l’accumulation d’erreur, car à mesure des itérations en perd de plus en plus en précision. 
+Les axes en échelle logarithmique représentent en abscisse le temps (en nombre d'itérations) et en ordonnée la distance relative à l’optimal. Plus cette distance est grande, plus on s'éloigne de la valeur optimale, considérée correcte.
+
+On observe clairement les conséquences de l’accumulation d’erreur, car la précision diminue au fil des itérations. 
 CADNA semble fournir des résultats équivalents à ceux du mode d’arrondi standard (RNDN), dans l’ensemble plus précis que l’arrondi randomisé sur ce cas d'étude.
 
 \subsubsection{Gradient conjugué}
 Concernant le gradient conjugué, on s'est proposé de comparer les deux modes d’arrondi en fonction du nombre d’itérations, ainsi que de la précision des mantisses utilisées. Les résultats sont semblables à ceux obtenus avec Lorenz : l'arrondi au plus près semble là aussi plus efficace. En revanche, ce cas n'a pas été comparé à CADNA.
-Des courbes de ces résultats seront intégrées à ce rapport une fois générées de nouveau.
-
+Ces résultats seront présentés dans un rapport ultérieur.
 
 %[ l’objectif était de se lancer dans les réseaux de neurones, j’ai décidé de me lancer dans l’analyse des erreurs ]
 Avant de me lancer dans l’extension aux réseaux de neurones, j’ai décidé de réaliser l’implémentation de FPANR en juin dernier.
@@ -139,13 +145,14 @@ Avant de me lancer dans l’extension aux réseaux de neurones, j’ai décidé 
 \subsection{ FPANR }
 FPANR est un format d'encodage particulier, présenté dans \cite{defour2018fp}.
 Le principe est d'encoder un flottant d'une manière permettant de \textbf{stocker} dans la mantisse le nombre de bits non significatifs de la valeur flottante elle-même.
-On a vu qu’au cours des calculs, un nombre flottant peut être amené à accumuler du bruit. La partie de sa mantisse située du côté de bits de poids faible devient alors non signifiante.\\
-L'idée d'enregistrer le nombre de bits significatifs en parallèle du flottant trouve son origine dans \textit{Significance arithmetic}\cite{goldstein1963significance}
+On a vu qu’au cours des calculs, un nombre flottant peut être amené à accumuler du bruit. La partie de sa mantisse située du côté des bits de poids faible devient alors non signifiante.
+
+L'idée d'enregistrer le nombre de bits significatifs en parallèle du flottant trouve son origine dans la \textit{Significance arithmetic}\cite{goldstein1963significance}.
 FPANR propose un mécanisme astucieux permettant de \textbf{marquer} la partie signifiante, à l'aide d'un \textit{pattern} spécifique dans la mantisse ; l'incertitude est ainsi directement représentée, sans surcoût mémoire.
 On conserve ainsi la compatibilité avec le standard IEEE754, ce qui s'avère utile pour l’allocation mémoire et l’implémentation \textit{hardware}.
-\\
-Le \textit{coût} engendré est un motif (indiquant la non significance) à la fin du nombre flottant ($1000....$). Ce pattern viendra remplacer des bits qui ont perdu leur sens au fil des erreurs d'arrondis. Le risque survient lorsque l'on manipule un nombre dont la précision est maximum, où FPANR se doit de \textit{tagger} le dernier bit, qui pourtant était correct. Le motif diminue donc la précision d'au plus 1 bit dans le pire des cas. % sur des process hautement dépendant de la précision, ce coût peut se révéler élevé
-Autre considération, les opérations entre nombres encodés FPANR ne peuvent se faire qu’après une reconversion de ceux-ci en flottants IEEE 754, ce qui peut entraîner des conséquences en terme de performance et de temps d’exécution.
+
+Le motif (marquant la non significance) à la fin du nombre flottant sera par convention $1000....$. Ce pattern viendra remplacer des bits qui ont perdu leur sens au fil des erreurs d'arrondis. En contrepartie, un risque survient lorsque l'on manipule un nombre dont la précision est maximum, car FPANR \textit{taggera} le dernier bit de la mantisse, qui pourtant était correct. Le motif diminue donc la précision d'au plus 1 bit dans le pire des cas. % sur des process hautement dépendant de la précision, ce coût peut se révéler élevé
+D'autre part, les opérations entre nombres encodés FPANR ne peuvent se faire qu’après une reconversion de ceux-ci en flottants IEEE 754, ce qui peut entraîner des conséquences en terme de performance et de temps d’exécution.
 \\
 
 Cette démarche s’architecte avec les objectifs de ma thèse en ce sens que FPANR permet de suivre la précision au fil de l’exécution.
@@ -154,8 +161,9 @@ On se propose donc d'en réaliser une intégration LLVM, afin de rendre possible
 %L’objectif dans le cadre de ma thèse est de rendre possible l’intégration de cet encodage dans n’importe quel programme.
 À cette fin, et plutôt que de redéfinir des passes LLVM \textit{à la main}, nous avons choisi de nous baser sur le travail réalisé sur Verificarlo, qui contient déjà la structure des passes nécessaires.
 Cela nous a permis de gagner un temps précieux lors de la réalisation.
-L’expérience est d'ailleurs un succès puisque nous avons déjà réussi à manipuler des nombres FPANR, et à les expérimenter sur quelques cas.\\
+L’expérience est d'ailleurs un succès puisque nous avons déjà réussi à manipuler des nombres FPANR, et à les expérimenter sur quelques cas.
 \\
+
 Cependant, nous nous sommes heurtés à quelques difficultés, qu'il nous faut d'abord régler.
 Premièrement, FPANR nécessite une conversion explicite entre un flottant IEEE 754 et un flottant FPANR. Il est donc nécessaire de transformer \textbf{toutes les entrées} des programmes cible (y compris les constantes utilisées en dur dans le code lors des calculs) pour pouvoir manipuler correctement les nombres dans le programme, et faire de même lors de \textbf{toutes les sorties} (affichage écran, écriture fichier etc). 
 Pour y parvenir, plusieurs solutions ont été envisagées : la solution la plus simple est de coder à la main les conversions, à l’aide d’une librairie les contenant. Cela est pratique à court terme, mais l’objectif à moyen terme sera d’automatiser cela grâce à LLVM.
@@ -164,9 +172,9 @@ Il faudra aussi s’interroger sur le comportement à adopter lorsque le program
 
 
 \section{Publications en cours}
-Bien que je n'ai postulé à aucune conférence dans l'immédiat, j'ai été chaleureusement encouragé par mes directeur et co-directeur à entamer la rédaction de ma démarche et des résultats obtenus au fil de l'eau, à fortiori sur l'arrondi randomisé appliqué au gradient conjugué, et à l'attracteur de Lorenz (et bientôt aux réseaux de neurones). Je dois donc finaliser et parfaire cette base afin de publier ces résultats concernant le comportement de l'arrondi randomisé sur ces processus itératifs.
-\\
-Dans un deuxième temps, une publication contenant les bancs de tests réalisés sur la bibliothèque FPANR, sur les SPEC\footnote{\url{https://www.spec.org/cpu2006/}} notamment, sera proposée.
+Bien que je n'ai postulé à aucune conférence dans l'immédiat, j'ai été chaleureusement encouragé par mes encadrants à entamer la rédaction de ma démarche et des résultats obtenus au fil de l'eau, à fortiori sur l'arrondi randomisé appliqué au gradient conjugué, et à l'attracteur de Lorenz (et bientôt aux réseaux de neurones). Ces résultats concernant le comportement de l'arrondi randomisé sur ces processus itératifs pourront être publiés.
+
+Dans un deuxième temps, une publication contenant les résultats des bancs de tests des SPEC\cite{specweb} réalisés sur la bibliothèque FPANR  notamment, sera proposée.
 
 \section{Planning prévisionnel}
 % analyser erreurs, (identifier).
@@ -179,23 +187,25 @@ De plus, j'ai pu intégrer FPANR à LLVM, via Verificarlo, afin de tester facile
 Cette partie présente les jalons restant à réaliser tout au long de ma thèse\footnote{un planning détaillé peut être consulté à la table \ref{planning} en annexe (p\pageref{planning})}.
 
 \subsection{FPANR}
-Avant de nous confronter aux codes d'érosion du littoral de GLADYS, nous tenons à confronter les outils développés jusqu'ici à des jeux de données reconnus dans le domaine : les SPEC. La publication de ces résultats occupera la fin de l'année 2018. \\
+Avant de nous confronter aux codes d'érosion du littoral de GLADYS, nous tenons à confronter les outils développés jusqu'ici à des jeux de données reconnus dans le domaine : les SPEC.
+
 Dans un deuxième temps, on observe que FPANR peut potentiellement perdre rapidement de la précision ; envisager un modèle hybride croisé avec l'arrondi randomisé pourra s'envisager dans un deuxième temps.
 
 \subsection{Arrondi randomisé}
-La reproduction des résultats de Gupta \& al.\cite{gupta2015deep} sera au cœur de cet objectif, prolongeant l'étude sur la descente de gradient - en ce sens que l'apprentissage des réseaux de neurones se base lui aussi sur une descente de gradient. On se basera pour cela sur la bibliothèque déjà implémentée lors de la première année de thèse. Une fois ceci fait, et une fois d'autres métriques implémentées sur les cas de Lorenz et du Gradient conjugué (telles que le nombre de bits perdus dans le premier cas ou le degré de convergence dans le second), s'atteler à leur publication.
+La reproduction des résultats de Gupta \& al.\cite{gupta2015deep} sera au cœur de cet objectif, prolongeant l'étude sur la descente de gradient - en ce sens que l'apprentissage des réseaux de neurones se base lui aussi sur une descente de gradient. On se basera pour cela sur la bibliothèque déjà implémentée lors de la première année de thèse, en y ajoutant d'autres métriques sur les cas de Lorenz et du Gradient conjugué (telles que le nombre de bits perdus dans le premier cas ou le degré de convergence dans le second).
 
 \subsection{GLADYS}
 % Confrontation
 % automatic differentiation, verificarlo, cadna, qui sont d’autres outils dans le domaine, qui pourront me servir de repères
 %l’objectif de ma thèse c’est de voir un vrai code. aidé par des experts qu’on a dans la région, qui sont compétents sur le sujet : les modèles et simulations de Gladys.
-Une fois notre outil confronté aux initiatives existantes, qui auront servi de repères, la vocation centrale de la thèse ACSEL se matérialisera en l'appliquant aux modèles de prédiction d'érosion du littoral de GLADYS. Les problématiques traitées par cette communauté ont une réelle portée sociétale et écologique (montée des eaux, immobilier, tourisme, etc), qui est une motivation supplémentaire à contribuer à ce travail.
+Une fois notre outil confronté aux initiatives existantes, qui auront servi de repères, la vocation centrale de la thèse ACSEL se matérialisera en l'appliquant aux modèles de prédiction d'érosion du littoral de GLADYS. Qui plus est, les problématiques traitées par cette communauté ont une réelle portée sociétale et écologique (montée des eaux, immobilier, tourisme, etc), ce qui donne une valeur d'autant plus gratifiante à ce travail.
 % Application aux modèles de prédiction d’érosion du littoral de GLADYS
 %Récolte de statistiques sur les programmes par méthode de Monte Carlo
 Pour cela, je pourrai m'appuyer sur les experts que nous avons dans la région, compétents sur le sujet.
-Concernant le choix du modèle et de la simulation à étudier, un rapport de critères sera fourni à Frederic Bouchette, référent côté Gladys, pour lesdites simulations, et membre du CSI. Après étude de ce dernier et discussions, des simulations seront choisies en fonction de leurs caractéristiques pour servir de sujet d'étude à cette thèse.
+Après concertation, on se proposera d'établir un rapport contenant les différents critères d'application de la solution développée. Ce document servira de base aux experts de GLADYS, dont Frédéric Bouchette sera le référent dans ce contexte, pour proposer un panel de simulations qui serviront de sujet d'étude à cette thèse.
+% Concernant le choix du modèle et de la simulation à étudier, un rapport de critères sera fourni à Frederic Bouchette, référent côté Gladys, pour lesdites simulations, et membre du CSI. Après étude de ce dernier et discussions, des simulations seront choisies en fonction de leurs caractéristiques pour servir de sujet d'étude à cette thèse.
 On s'appliquera à étudier des simulations qui présentent potentiellement des erreurs numériques, afin de valider notre démarche tout en ayant un réel apport auprès des chercheurs de cette communauté.
-\\
+
 Ensuite, on se propose de récolter les statistiques sur les programmes étudiés, notamment par méthode de Monte Carlo.
 Enfin, on procèdera à l'extraction de l'information pertinente de ces statistiques, en utilisant des méthodes de Data Mining (Random Forest...).
 Ces informations seront en dernier lieu délivrées dans un format intelligible à l'utilisateur.
@@ -216,8 +226,10 @@ Le rythme de rédaction devra aller croissant à partir de maintenant. Je pourra
 
 \section{Difficultés rencontrées}
 Il m'a été difficile de déterminer, d'un point de vue \textit{scientifique}, quels résultats étaient significatifs (ou non), à fortiori lors de l'étude de l'arrondi randomisé. J'aurais aimé tester davantage de cas mettant en valeur l'arrondi randomisé, à fortiori des cas où son impact est significatif.
-Je n'étais pas certain que les résultats obtenus sur les cas étudiés étaient \textit{suffisants}, dans le sens \textit{probants} car utiles à la communauté scientifique. Cela a quelque peu miné mon avancement et soulevé de nombreux doutes. Désormais, une meilleure connaissance de l'état de l'art me permets d'être plus confiant à ce niveau.\\
-Dans un deuxième registre, commencer à rédiger l'article sur l'arrondi randomisé (et le faire régulièrement au fil de mes progrès) a été toute une procédure à mettre en place pour moi : je n'avais pas l'habitude de formaliser aussi explicitement ma pensée sur un projet, en l'ocurrence de recherche, aussi cela m'a pris du temps avant d'y parvenir.\\
+Je n'étais pas certain que les résultats obtenus sur les cas étudiés étaient \textit{suffisants}, dans le sens \textit{probants} car utiles à la communauté scientifique. Cela a quelque peu miné mon avancement et soulevé de nombreux doutes. Désormais, une meilleure connaissance de l'état de l'art me permets d'être plus confiant à ce niveau.
+
+Dans un deuxième registre, commencer à rédiger l'article sur l'arrondi randomisé (et le faire régulièrement au fil de mes progrès) a été toute une procédure à mettre en place pour moi : je n'avais pas l'habitude de formaliser aussi explicitement ma pensée sur un projet, en l'ocurrence de recherche, aussi cela m'a pris du temps avant d'y parvenir.
+
 Dans un dernier temps, j'ai observé une difficulté à prendre du recul sur le travail, et une tendance à s'enfoncer sur des points de blocage, sans parvenir à formuler des appels à l'aide qui auraient permis de débloquer rapidement ces points. A l'avenir, des efforts doivent être mis en œuvre pour consulter plus régulièrement les intervenants aptes à résoudre mes éventuels problèmes, qu'ils soient d'ordre technique ou théoriques.
 %21. Questions
 %différence DSA (CESTAC) / MCA :
